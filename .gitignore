@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+
+ai/activity_history.json
+ai/ai_state.json

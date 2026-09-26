@@ -1,0 +1,10 @@
+[2026-09-25 23:25:59] MODIFIED: monitored_files\test.txt
+[2026-09-25 23:28:50] NEW FILE: monitored_files\newfile.txt
+[2026-09-25 23:28:50] MODIFIED: monitored_files\test.txt
+[2026-09-25 23:30:21] MODIFIED: monitored_files\test.txt
+[2026-09-25 23:33:22] DELETED: monitored_files\delete_test.txt
+[2026-09-26 10:49:56] DELETED: monitored_files\delete_test.txt
+[2026-09-26 10:52:50] NEW FILE: monitored_files\new_test.txt
+[2026-09-26 10:52:50] DELETED: monitored_files\delete_test.txt
+[2026-09-26 10:55:57] NEW FILE: monitored_files\new_test.txt
+[2026-09-26 10:55:57] DELETED: monitored_files\delete_test.txt

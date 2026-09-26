@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>File Integrity Monitoring System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            margin-top: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #555;
+        }
+
+        .number {
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .new {
+            color: #22a06b;
+        }
+
+        .modified {
+            color: #d88a00;
+        }
+
+        .deleted {
+            color: #d64545;
+        }
+
+        .ai-card {
+            margin-top: 25px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .ai-status {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .normal {
+            color: #22a06b;
+        }
+
+        .anomaly {
+            color: #d64545;
+        }
+
+        .learning {
+            color: #d88a00;
+        }
+
+        .activity {
+            margin-top: 25px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 800px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>File Integrity Monitoring System</h1>
+
+    <p class="subtitle">
+        Monitor files and detect unauthorized changes using SHA-256 hashing and AI anomaly detection.
+    </p>
+
+    <h2 class="section-title">File Status</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>New Files</h3>
+            <div id="newCount" class="number new">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Modified Files</h3>
+            <div id="modifiedCount" class="number modified">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Deleted Files</h3>
+            <div id="deletedCount" class="number deleted">0</div>
+        </div>
+
+    </div>
+
+    <div class="ai-card">
+
+        <h2>🤖 AI Anomaly Detection</h2>
+
+        <div id="aiStatus" class="ai-status normal">
+            NORMAL
+        </div>
+
+        <p id="aiMessage">
+            Checking file activity...
+        </p>
+
+        <p>
+            <strong>Anomaly Score:</strong>
+            <span id="aiScore">N/A</span>
+        </p>
+
+    </div>
+
+    <div class="activity">
+
+        <h2>Recent Activity</h2>
+
+        <ul id="activityList">
+            <li>No recent activity.</li>
+        </ul>
+
+    </div>
+
+    <div class="footer">
+
+        <span id="systemStatus">
+            System connected
+        </span>
+
+        • Last checked:
+        <span id="lastChecked">-</span>
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function loadStatus() {
+
+    try {
+
+        const response = await fetch("/api/status");
+
+        const data = await response.json();
+
+
+        // File counts
+
+        document.getElementById("newCount").textContent =
+            data.new.length;
+
+        document.getElementById("modifiedCount").textContent =
+            data.modified.length;
+
+        document.getElementById("deletedCount").textContent =
+            data.deleted.length;
+
+
+        // AI status
+
+        const aiStatus =
+            document.getElementById("aiStatus");
+
+        aiStatus.textContent =
+            data.ai_result || "NORMAL";
+
+
+        aiStatus.className = "ai-status";
+
+
+        if (data.ai_result === "ANOMALY") {
+
+            aiStatus.classList.add("anomaly");
+
+        } else if (data.ai_result === "LEARNING") {
+
+            aiStatus.classList.add("learning");
+
+        } else {
+
+            aiStatus.classList.add("normal");
+
+        }
+
+
+        document.getElementById("aiMessage").textContent =
+            data.ai_message || "No suspicious activity detected.";
+
+
+        document.getElementById("aiScore").textContent =
+            data.ai_score !== null && data.ai_score !== undefined
+                ? data.ai_score
+                : "N/A";
+
+
+        // Recent activity
+
+        const activityList =
+            document.getElementById("activityList");
+
+        activityList.innerHTML = "";
+
+
+        const activities = [];
+
+
+        data.new.forEach(file => {
+
+            activities.push(
+                "NEW FILE: " + file
+            );
+
+        });
+
+
+        data.modified.forEach(file => {
+
+            activities.push(
+                "MODIFIED: " + file
+            );
+
+        });
+
+
+        data.deleted.forEach(file => {
+
+            activities.push(
+                "DELETED: " + file
+            );
+
+        });
+
+
+        if (activities.length === 0) {
+
+            const li = document.createElement("li");
+
+            li.textContent = "No recent activity.";
+
+            activityList.appendChild(li);
+
+        } else {
+
+            activities.forEach(activity => {
+
+                const li = document.createElement("li");
+
+                li.textContent = activity;
+
+                activityList.appendChild(li);
+
+            });
+
+        }
+
+
+        // Last checked time
+
+        document.getElementById("lastChecked").textContent =
+            new Date().toLocaleTimeString();
+
+
+    } catch (error) {
+
+        document.getElementById("systemStatus").textContent =
+            "System disconnected";
+
+        console.error(error);
+
+    }
+
+}
+
+
+// Load immediately
+
+loadStatus();
+
+
+// Load immediately
+loadStatus();
+
+</script>
+
+</body>
+</html>
