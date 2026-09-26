@@ -219,6 +219,9 @@ python web_app.py
 Then open the Flask dashboard in a browser.
 
 The dashboard displays the current file integrity status and AI anomaly detection result.
+## Dashboard Screenshot
+
+![FIM Dashboard](dashboard-anomaly.jpg)
 
 Testing
 
